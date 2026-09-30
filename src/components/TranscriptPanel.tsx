@@ -13,6 +13,7 @@ export default function TranscriptPanel(props: { store: Store }) {
     .filter((segment) => segment.transcriptId === props.store.state.activeTranscriptId)
     .filter((segment) => `${segment.speaker} ${segment.text}`.toLowerCase().includes(query().toLowerCase()))
     .sort((a, b) => a.order - b.order));
+  const conflictedSegmentIds = () => props.store.affectedByCommits('conflicted').segmentIds;
 
   const toggleSelected = (id: string) => {
     setSelected((items) => items.includes(id) ? items.filter((item) => item !== id) : [...items, id]);
@@ -89,6 +90,9 @@ export default function TranscriptPanel(props: { store: Store }) {
                 <strong>{segment.speaker}</strong>
                 <Show when={segment.assignments.A.join('|') !== segment.assignments.B.join('|')}>
                   <span class="conflict-dot" title="两位编码者判断不一致">分歧</span>
+                </Show>
+                <Show when={conflictedSegmentIds().has(segment.id)}>
+                  <span class="conflict-dot pending" title="该片段有未解决的跨标签页冲突提交">待选</span>
                 </Show>
               </div>
               <p>{segment.text}</p>

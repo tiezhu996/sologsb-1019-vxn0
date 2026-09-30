@@ -179,3 +179,38 @@ kbd { justify-self: start; padding: 3px 7px; border: 1px solid #ccd4cf; border-b
 .citation-link:hover { border-color: #9dbbb3; background: #f0f6f2; }
 .citation-link span { color: #788983; font-size: 9px; }
 .citation-link p { margin: 4px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+
+/* ------------------------------------------------------------------ */
+/* 未完成提交（outbox / WAL）状态与对话框                                 */
+/* ------------------------------------------------------------------ */
+button.save-state { display: flex; align-items: center; gap: 7px; border: 0; background: transparent; color: rgba(255,255,255,.78); font-size: 12px; margin-right: 8px; white-space: nowrap; cursor: pointer; font-family: inherit; }
+button.save-state:hover { color: #fff; }
+.save-state > span { width: 7px; height: 7px; border-radius: 50%; background: #8dd6a4; box-shadow: 0 0 0 4px rgba(141,214,164,.12); flex: none; }
+.save-state > span.error { background: #ff8b6e; box-shadow: 0 0 0 4px rgba(255,139,110,.18); }
+.save-state > span.conflict { background: #f4c15d; box-shadow: 0 0 0 4px rgba(244,193,93,.18); }
+.conflict-banner.is-error { background: #8a3525; }
+.pending-modal { width: min(760px, 100%); }
+.pending-toolbar { display: flex; justify-content: flex-end; margin: 6px 0 10px; }
+.pending-groups { display: grid; gap: 14px; margin-top: 10px; }
+.pending-group h4 { display: flex; align-items: center; gap: 8px; margin: 4px 0 8px; font-size: 12px; color: #53625e; }
+.pending-group h4 span { display: grid; place-items: center; min-width: 20px; height: 20px; padding: 0 6px; border-radius: 10px; background: #e7ece8; font-size: 10px; }
+.pending-item { padding: 12px 14px; border: 1px solid #dfe6e2; border-left-width: 3px; border-radius: 9px; background: #fbfcfa; margin-bottom: 8px; }
+.pending-item.conflicted { border-left-color: #c98a2c; background: #fdf8ee; }
+.pending-item.error { border-left-color: #c0503c; background: #fdf2ef; }
+.pending-item.queued { border-left-color: #699b8e; }
+.pending-item-head { display: flex; align-items: center; gap: 8px; font-size: 12px; flex-wrap: wrap; }
+.pending-meta { color: #8c9893; font-size: 10px; font-weight: 400; }
+.pending-detail { margin: 5px 0; color: #465a55; font-size: 11px; line-height: 1.5; }
+.pending-meta-line { display: flex; flex-wrap: wrap; gap: 10px; color: #73827d; font-size: 10px; }
+.pending-error { margin: 6px 0 0; padding: 6px 9px; border-radius: 6px; color: #8b3d2d; background: #f8e4de; font-size: 10px; line-height: 1.5; }
+.pending-actions { display: flex; align-items: center; gap: 8px; margin-top: 9px; }
+.pending-hint { color: #8c9893; font-size: 10px; }
+.pending-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+.pending-badge.queued { color: #2f6b5c; background: #dcefe8; }
+.pending-badge.conflicted { color: #8a5e1b; background: #f6e6c6; }
+.pending-badge.error { color: #92392a; background: #f4d7d0; }
+
+/* 实体级冲突标记 */
+.conflict-mark { padding: 1px 6px; border-radius: 9px; color: #8a5e1b !important; background: #f6e6c6; font-size: 9px !important; font-weight: 700; margin-left: 4px; }
+.conflict-dot.pending { color: #8a5e1b; background: #f6e6c6; }
+.theme-row.has-conflict .theme-color { box-shadow: 0 0 0 3px rgba(201,138,44,.25); }

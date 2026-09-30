@@ -8,6 +8,7 @@ export default function ThemeTree(props: { store: Store; onCreate: (parentId?: s
   const [query, setQuery] = createSignal('');
   const themes = createMemo(() => props.store.orderedThemes().filter((theme) => theme.name.toLowerCase().includes(query().toLowerCase())));
   const activeSegment = () => props.store.state.segments.find((segment) => segment.id === props.store.state.activeSegmentId);
+  const conflictedThemeIds = () => props.store.affectedByCommits('conflicted').themeIds;
 
   const countFor = (themeId: string) => props.store.state.segments.reduce((count, segment) => (
     count + (segment.assignments.A.includes(themeId) || segment.assignments.B.includes(themeId) ? 1 : 0)
@@ -40,10 +41,11 @@ export default function ThemeTree(props: { store: Store; onCreate: (parentId?: s
           const assignmentA = () => activeSegment()?.assignments.A.includes(theme.id) ?? false;
           const assignmentB = () => activeSegment()?.assignments.B.includes(theme.id) ?? false;
           return (
-            <div class="theme-row" classList={{ active: props.store.state.activeThemeId === theme.id, disagree: assignmentA() !== assignmentB() }}>
+            <div class="theme-row" classList={{ active: props.store.state.activeThemeId === theme.id, disagree: assignmentA() !== assignmentB(), 'has-conflict': conflictedThemeIds().has(theme.id) }}>
               <button class="theme-main" style={{ '--depth': depth(), '--theme-color': theme.color }} onClick={() => props.store.selectTheme(theme.id)}>
                 <span class="theme-color" />
                 <span class="theme-name">{theme.name}</span>
+                <Show when={conflictedThemeIds().has(theme.id)}><span class="conflict-mark" title="该主题有未解决的跨标签页冲突提交">冲突待选</span></Show>
                 <span class="theme-count">{countFor(theme.id)}</span>
               </button>
               <div class="theme-actions">

@@ -4,6 +4,7 @@ import TranscriptPanel from './components/TranscriptPanel';
 import ThemeTree from './components/ThemeTree';
 import Inspector from './components/Inspector';
 import ImportDialog from './components/ImportDialog';
+import PendingCommitsDialog from './components/PendingCommitsDialog';
 import { CreateThemeDialog, MergeThemeDialog, SplitThemeDialog } from './components/ThemeDialogs';
 import { useCodingStore } from './store/coding-store';
 
@@ -15,6 +16,7 @@ export default function App() {
   const [mergeOpen, setMergeOpen] = createSignal(false);
   const [splitOpen, setSplitOpen] = createSignal(false);
   const [shortcutsOpen, setShortcutsOpen] = createSignal(false);
+  const [pendingOpen, setPendingOpen] = createSignal(false);
 
   const activeSegments = createMemo(() => store.state.segments
     .filter((segment) => segment.transcriptId === store.state.activeTranscriptId)
@@ -85,7 +87,18 @@ export default function App() {
             <div><Typography variant="h6" component="div">访谈主题编码台</Typography><span>INTERPRETIVE CODING WORKBENCH</span></div>
           </div>
           <div class="top-actions">
-            <div class="save-state"><span classList={{ pulsing: !store.storageReady() }} />{store.remoteEnvelope() ? '检测到其他标签页修订' : store.storageReady() ? `已保存 · r${store.state.revision}` : '正在载入本地库'}</div>
+            <button class="save-state" classList={{ 'has-pending': store.pendingCommits().length > 0 }} onClick={() => setPendingOpen(true)} title="查看未完成提交、写入失败与冲突">
+              <span classList={{ pulsing: !store.storageReady() || store.queuedCount() > 0, error: store.errorCount() > 0, conflict: store.conflictedCount() > 0 }} />
+              {store.errorCount() > 0
+                ? `本地写入失败 · ${store.errorCount()} 条待重试`
+                : store.conflictedCount() > 0
+                  ? `其他标签页已更新 · ${store.conflictedCount()} 条待逐项选择`
+                  : store.queuedCount() > 0
+                    ? `提交中 · ${store.queuedCount()} 条待提交记录`
+                    : !store.storageReady()
+                      ? '正在载入本地库'
+                      : `已保存 · 最终修订 r${store.state.revision}`}
+            </button>
             <Button color="inherit" size="small" disabled={!store.canUndo()} onClick={store.undo}>撤销</Button>
             <Button color="inherit" size="small" disabled={!store.canRedo()} onClick={store.redo}>重做</Button>
             <Button variant="outlined" color="inherit" size="small" onClick={() => setImportOpen(true)}>导入转写</Button>
@@ -94,13 +107,18 @@ export default function App() {
         </Toolbar>
       </AppBar>
 
-      <Show when={store.remoteEnvelope()}>
-        {(remote) => (
-          <div class="conflict-banner" role="alert">
-            <div><strong>另一个标签页写入了较新的版本</strong><span>本地数据库修订 r{remote().revision}。系统没有自动覆盖任何数据，请明确选择保留哪一份。</span></div>
-            <div><Button size="small" color="inherit" onClick={store.applyRemoteVersion}>载入其他标签页版本</Button><Button size="small" variant="contained" color="warning" onClick={store.keepLocalVersion}>保留本页并建立新修订</Button></div>
+      <Show when={store.conflictedCount() > 0 || store.errorCount() > 0}>
+        <div class="conflict-banner" role="alert" classList={{ 'is-error': store.errorCount() > 0 }}>
+          <div>
+            <strong>{store.errorCount() > 0 ? '有待提交记录写入本地数据库失败' : '另一个标签页提交了更新'}</strong>
+            <span>
+              {store.errorCount() > 0
+                ? '改动已先保存在待提交记录中，没有丢失。恢复后可重试；对方标签页的内容也不会被覆盖。'
+                : `本页 ${store.conflictedCount()} 条改动的基础修订已落后，已完整保留。载入对方最新修订后，请逐项选择在其上重放或放弃，系统不会静默覆盖任何一方。`}
+            </span>
           </div>
-        )}
+          <div><Button size="small" variant="contained" onClick={() => setPendingOpen(true)}>逐项处理未完成提交</Button></div>
+        </div>
       </Show>
 
       <section class="project-strip">
@@ -144,6 +162,7 @@ export default function App() {
       <CreateThemeDialog store={store} open={createOpen()} parentId={createParent()} onClose={() => { setCreateOpen(false); setCreateParent(undefined); }} />
       <MergeThemeDialog store={store} open={mergeOpen()} onClose={() => setMergeOpen(false)} />
       <SplitThemeDialog store={store} open={splitOpen()} onClose={() => setSplitOpen(false)} />
+      <PendingCommitsDialog store={store} open={pendingOpen()} onClose={() => setPendingOpen(false)} />
 
       <div class="modal-backdrop" classList={{ hidden: !shortcutsOpen() }} onClick={() => setShortcutsOpen(false)}>
         <section class="modal-card" onClick={(event) => event.stopPropagation()} role="dialog" aria-modal="true">
