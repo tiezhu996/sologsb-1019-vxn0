@@ -26,6 +26,7 @@ export const seedState = (): CodingState => {
   return {
     revision: 1,
     updatedAt: new Date().toISOString(),
+    headCommitId: 'seed',
     activeTranscriptId: 'tr-001',
     activeSegmentId: 's-001',
     activeThemeId: 't-school-choice',
@@ -46,6 +47,7 @@ export const seedState = (): CodingState => {
       note: ''
     })),
     themes,
-    audit: [{ id: 'a-seed', at: new Date().toISOString(), action: '初始化', detail: '载入演示访谈与两个编码者的判断' }]
+    audit: [{ id: 'a-seed', at: new Date().toISOString(), action: '初始化', detail: '载入演示访谈与两个编码者的判断' }],
+    conflicts: []
   };
 };

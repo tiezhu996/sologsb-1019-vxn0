@@ -179,3 +179,32 @@ kbd { justify-self: start; padding: 3px 7px; border: 1px solid #ccd4cf; border-b
 .citation-link:hover { border-color: #9dbbb3; background: #f0f6f2; }
 .citation-link span { color: #788983; font-size: 9px; }
 .citation-link p { margin: 4px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; }
+
+/* ---- 待提交记录 / 分叉 / 写入失败 ---- */
+.save-state > span.warn { background: #f3c160; box-shadow: 0 0 0 4px rgba(243,193,96,.18); }
+.save-state > span.error { background: #e8806f; box-shadow: 0 0 0 4px rgba(232,128,111,.2); animation: pulse 1s infinite; }
+.error-banner { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 12px 24px; color: #fff; background: #a23b2c; }
+.error-banner > div:first-child { display: flex; flex-direction: column; gap: 3px; font-size: 12px; }
+.error-banner > div:first-child span { opacity: .85; }
+.pending-panel, .marker-panel { margin: 12px 24px 0; padding: 14px 16px; border: 1px solid #e3c9a8; border-radius: 12px; background: #fff9ef; }
+.marker-panel { border-color: #e4b7ad; background: #fdf1ee; }
+.pending-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.pending-heading h3 { margin: 2px 0 0; font-size: 15px; color: #6b4a1f; }
+.pending-list, .marker-list { display: grid; gap: 8px; }
+.pending-item { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; padding: 10px 12px; border: 1px solid #ecd9bd; border-radius: 9px; background: #fffdf8; }
+.pending-item.conflicted { border-color: #d98a78; background: #fdf4f1; }
+.pending-main strong { font-size: 12px; color: #5c411b; }
+.pending-main p { margin: 2px 0 5px; font-size: 12px; color: #6f6252; }
+.pending-meta { display: flex; flex-wrap: wrap; gap: 10px; font-size: 10px; color: #94846c; }
+.pending-conflict { margin-top: 6px; padding: 7px 9px; border-radius: 7px; background: #f7e3db; color: #8a3b27; font-size: 11px; line-height: 1.5; }
+.pending-conflict ul { margin: 4px 0 0; padding-left: 16px; }
+.pending-error { margin-top: 5px; font-size: 11px; color: #a23b2c; }
+.pending-actions { display: flex; gap: 6px; align-items: center; }
+.pending-status.queued { font-size: 11px; color: #9a8a70; white-space: nowrap; }
+.marker-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 12px; border: 1px solid #eccdc4; border-radius: 9px; background: #fff; }
+.marker-item strong { font-size: 12px; color: #8a3b27; }
+.marker-item p { margin: 2px 0; font-size: 11px; color: #6f5a54; }
+.marker-item span { font-size: 10px; color: #a5918a; }
+.conflict-marker-box { margin-bottom: 10px; }
+.marker-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 8px; margin-top: 5px; border: 1px solid #eccdc4; border-radius: 7px; background: #fdf4f1; }
+.marker-row p { margin: 0; font-size: 10px; color: #8a3b27; line-height: 1.4; }

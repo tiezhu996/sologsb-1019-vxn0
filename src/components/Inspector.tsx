@@ -130,6 +130,17 @@ export default function Inspector(props: { store: Store }) {
       </Show>
 
       <Show when={section() === 'audit'}>
+        <Show when={props.store.unresolvedMarkers().length}>
+          <div class="conflict-marker-box">
+            <div class="citation-heading">数据对不上的提交重放 <span>{props.store.unresolvedMarkers().length} 条未复核</span></div>
+            <For each={props.store.unresolvedMarkers()}>{(marker) => (
+              <div class="marker-row">
+                <p>{marker.message}</p>
+                <button class="link-button" onClick={() => props.store.resolveConflictMarker(marker.id)}>标记已复核</button>
+              </div>
+            )}</For>
+          </div>
+        </Show>
         <div class="audit-summary">
           <div><strong>{props.store.state.audit.length}</strong><span>次最近操作</span></div>
           <div><strong>{citations().length}</strong><span>条当前主题引用</span></div>
